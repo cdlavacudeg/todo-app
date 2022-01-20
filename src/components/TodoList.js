@@ -2,7 +2,7 @@ import React from "react";
 
 function TodoList(props){
     return(
-        <section>
+        <section className="TodoList">
             <ul>
                 {props.children}
             </ul>
