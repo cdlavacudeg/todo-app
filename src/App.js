@@ -1,9 +1,5 @@
 import React from "react";
-import { TodoCounter } from "./components/TodoCounter";
-import { TodoSearch } from "./components/TodoSearch";
-import { TodoList } from "./components/TodoList";
-import { TodoItem } from "./components/TodoItem";
-import { CreateTodoButton } from "./components/CreateTodoButton";
+import { AppUI } from "./AppUI";
 //import './App.css';
 /*const defaulTodos=[
   {text:'Cortar Cebolla',completed:true},
@@ -12,30 +8,34 @@ import { CreateTodoButton } from "./components/CreateTodoButton";
   {text:'Hacker Rank',completed:true}
 ]*/
 
+function useLocalStorage (itemName,initialValue){
+  const localStorageItem=localStorage.getItem(itemName);
+  let parsedItem;
+
+  if(!localStorageItem){
+    localStorage.setItem(itemName,JSON.stringify(initialValue));
+    parsedItem=initialValue;
+  }else{
+    parsedItem=JSON.parse(localStorageItem);
+  }
+  const [item,setItem]=React.useState(parsedItem);
+
+  const saveItem=(newItem)=>{
+    const stringifiedItem=JSON.stringify(newItem);
+    localStorage.setItem('TODOS_V1',stringifiedItem);
+    setItem(newItem);
+  }
+  return [item,saveItem];
+}
 
 function App(props) {
-  const localStorageTodos=localStorage.getItem('TODOS_V1');
-  let parsedTodos;
-
-  if(!localStorageTodos){
-    localStorage.setItem('TODOS_V1',JSON.stringify([]));
-    parsedTodos=[];
-  }else{
-    parsedTodos=JSON.parse(localStorageTodos);
-  }
-
-
-  const [todos,setTodos]=React.useState(parsedTodos);
+  const [todos,saveTodos]=useLocalStorage('TODOS_V1');
+  
   const[searchValue,setSearchValue]=React.useState('');
   
   const completed=todos.filter(todo=>!!todo.completed).length;
   const totalTodos=todos.length;
 
-  const saveTodos=(newTodos)=>{
-    const stringifiedTodos=JSON.stringify(newTodos);
-    localStorage.setItem('TODOS_V1',stringifiedTodos);
-    setTodos(newTodos);
-  }
   const completeTodo=(text)=>{
     const todoIndex=todos.findIndex(todo=>todo.text===text);
     const newTodos=[...todos];
@@ -51,32 +51,13 @@ function App(props) {
 
 
   return (
-    <React.Fragment>
-      <TodoCounter 
-        total={totalTodos}
-        completed={completed}
-      />
-      <TodoSearch 
-        searchValue={searchValue}
-        setSearchValue={setSearchValue}
-      />
-      
-
-      <TodoList>
-      {todos.filter(todo=>todo.text.toLowerCase().includes(searchValue.toLowerCase()))
-        .map(todo=>(
-          <TodoItem 
-            key={todo.text} 
-            text={todo.text} 
-            completed={todo.completed}
-            onComplete={completeTodo}
-            onDelete={deleteTodo}
-          />))}
-      </TodoList> 
-      <CreateTodoButton />
-      
-    </React.Fragment>
-    
+    <AppUI totalTodos={totalTodos}
+      completed={completed}
+      searchValue={searchValue}
+      setSearchValue={setSearchValue}
+      todos={todos}
+      completeTodo={completeTodo}
+      deleteTodo={deleteTodo}/>
   );
 }
 
