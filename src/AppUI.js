@@ -5,13 +5,17 @@ import { TodoList } from "./components/TodoList";
 import { TodoItem } from "./components/TodoItem";
 import { CreateTodoButton } from "./components/CreateTodoButton";
 
-function AppUI({totalTodos,
-                completed,
-                searchValue,
-                setSearchValue,
-                todos,
-                completeTodo,
-                deleteTodo}){
+function AppUI({
+    loading,
+    error,
+    totalTodos,
+    completed,
+    searchValue,
+    setSearchValue,
+    todos,
+    completeTodo,
+    deleteTodo
+            }){
  return (
     <React.Fragment>
         <TodoCounter 
@@ -25,6 +29,10 @@ function AppUI({totalTodos,
         />
         
         <TodoList>
+        {error && <p>Error</p>}
+        {loading && <p>Estamos Cargando</p>}
+        {(!loading && !todos.lenght) && <p>Crea tu primer Todo.</p>}
+
         {todos.filter(todo=>todo.text.toLowerCase().includes(searchValue.toLowerCase()))
             .map(todo=>(
             <TodoItem 
