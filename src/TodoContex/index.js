@@ -26,6 +26,15 @@ function TodoProvider(props){
     saveTodos(newTodos);
   };
   
+  const addTodo=(text)=>{
+
+    const newTodos=[...todos];
+    newTodos.push({
+      complete:false,
+      text:text
+    });
+    saveTodos(newTodos);
+  };
  /* console.log('render antes effect');
   React.useEffect(()=>{
     console.log('use effect');
@@ -43,6 +52,7 @@ function TodoProvider(props){
             todos,
             completeTodo,
             deleteTodo,
+            addTodo,
             openModal,
             setOpenModal,
         }}>
