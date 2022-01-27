@@ -8,7 +8,7 @@ function TodoSearch(){
     }
     return (
     <input 
-        placeholder="React" 
+        placeholder="Filtra las tareas" 
         className="TodoSearch"
         value={searchValue} 
         onChange={onSearchValueChange}/>
